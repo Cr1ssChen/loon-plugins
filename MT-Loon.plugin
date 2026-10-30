@@ -1,6 +1,6 @@
 #!name = 美团去广告 · Loon 修订版 r2
 #!desc = 隐藏底栏视频/小团，清理指定推荐流、我的页推荐、搜索推广词、AI技能、购物车横幅和开屏图。需要配套 MT-Loon.js；未做真机验证。
-#!author = TG@ZenMoFiShi
+#!author = @ZenMoFiShi
 #!system = iOS,iPadOS
 #!loon_version = 3.5.1(983)
 #!date = 2026-10-30
