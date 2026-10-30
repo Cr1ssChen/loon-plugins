@@ -1,16 +1,11 @@
-#!name = 美团去广告 · Loon 修订版 r2
-#!desc = 隐藏底栏视频/小团，清理指定推荐流、我的页推荐、搜索推广词、AI技能、购物车横幅和开屏图。需要配套 MT-Loon.js；未做真机验证。
+#!name = 美团去广告 · Loon 
+#!desc = 隐藏底栏视频/小团，清理指定推荐流、我的页推荐、搜索推广词、AI技能、购物车横幅和开屏图。需要配套 MT-Loon.js；
 #!author = @ZenMoFiShi
 #!system = iOS,iPadOS
 #!loon_version = 3.5.1(983)
 #!date = 2026-10-30
 #!tag = 去广告,美团
 #!type = normal
-
-# r2：参考用户确认有效的「美团App去广告.plugin」，恢复其 33 条 IP 与 HTTPDNS 复写。
-# 已填写 GitHub 地址：Cr1ssChen/loon-plugins；上传本插件与配套 JS 到 main 分支根目录。
-# MT-Loon.plugin 与 MT-Loon.js 都放在该仓库的 main 分支根目录。
-# 请先阅读 README.md；不要与其他美团净化插件同时启用。
 
 [Argument]
 clean_tabs = switch,true,tag=隐藏视频和小团底栏,desc=保留首页和我的等其他底栏
@@ -86,15 +81,15 @@ request if ${url} ~= /^http:\/\/103\.37\.155\.60\/fetch(?:[\/?]|$)/ then reject(
 [Script]
 # 保留路径名称边界；除两个 scene 外，允许有效附件覆盖的后续子路径。
 # 固定版本参数用于区分上午的 JS 缓存；它不是账号令牌。
-response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/aggroup\/indexTab(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_tabs}, tag="美团-底栏Tab"
-response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/gwc_feed1_2265\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_feed}, tag="美团-购物车推荐流"
-response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/personalcenter_2154\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_feed}, tag="美团-我的推荐流"
-response if ${url} ~= /^https?:\/\/mt-personalcenter\.meituan\.com\/usercenter\/display(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_recommend}, tag="美团-我的页推荐"
-response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/defaultword(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索默认词"
-response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/hotword\/city\/divide\/hotrecommend(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索推广热词"
-response if ${url} ~= /^https?:\/\/assistify\.meituan\.com\/assistant\/getAppClientHornConfig(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_ai_skills}, tag="美团-AI技能"
-response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/mop\/entry\/shoppingCartEntry(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_banner}, tag="美团-购物车Banner"
-response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/api\/entryModule\/startupPicture(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_splash}, tag="美团-开屏图"
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/aggroup\/indexTab(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_tabs}, tag="美团-底栏Tab"
+response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/gwc_feed1_2265\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_feed}, tag="美团-购物车推荐流"
+response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/personalcenter_2154\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_feed}, tag="美团-我的推荐流"
+response if ${url} ~= /^https?:\/\/mt-personalcenter\.meituan\.com\/usercenter\/display(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_recommend}, tag="美团-我的页推荐"
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/defaultword(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索默认词"
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/hotword\/city\/divide\/hotrecommend(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索推广热词"
+response if ${url} ~= /^https?:\/\/assistify\.meituan\.com\/assistant\/getAppClientHornConfig(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_ai_skills}, tag="美团-AI技能"
+response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/mop\/entry\/shoppingCartEntry(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_banner}, tag="美团-购物车Banner"
+response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/api\/entryModule\/startupPicture(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/meituan/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_splash}, tag="美团-开屏图"
 
 [MitM]
 # 沿用有效附件的 7 个精确域名：5 个响应域名与 2 个 HTTPDNS 域名。
