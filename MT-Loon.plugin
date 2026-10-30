@@ -1,0 +1,102 @@
+#!name = 美团去广告 · Loon 修订版 r2
+#!desc = 隐藏底栏视频/小团，清理指定推荐流、我的页推荐、搜索推广词、AI技能、购物车横幅和开屏图。需要配套 MT-Loon.js；未做真机验证。
+#!author = 原规则 TG@ZenMoFiShi；本版重新整理
+#!system = iOS,iPadOS
+#!loon_version = 3.5.1(983)
+#!date = 2026-10-30
+#!tag = 去广告,美团
+#!type = normal
+
+# r2：参考用户确认有效的「美团App去广告.plugin」，恢复其 33 条 IP 与 HTTPDNS 复写。
+# 已填写 GitHub 地址：Cr1ssChen/loon-plugins；上传本插件与配套 JS 到 main 分支根目录。
+# MT-Loon.plugin 与 MT-Loon.js 都放在该仓库的 main 分支根目录。
+# 请先阅读 README.md；不要与其他美团净化插件同时启用。
+
+[Argument]
+clean_tabs = switch,true,tag=隐藏视频和小团底栏,desc=保留首页和我的等其他底栏
+clean_cart_feed = switch,true,tag=清理购物车推荐流
+clean_mine_feed = switch,true,tag=清理我的页推荐流
+clean_mine_recommend = switch,true,tag=移除我的页跨业务推荐
+clean_search = switch,true,tag=清理搜索默认词和推广热词,desc=不修改用户输入或正常搜索结果
+clean_ai_skills = switch,true,tag=清理AI技能配置,desc=这属于界面精简而非仅拦截广告
+clean_cart_banner = switch,true,tag=清理购物车顶部横幅
+clean_splash = switch,true,tag=清理开屏图
+
+[Rule]
+# 沿用参考规则的 Shark 传输通道限制，尝试促使 App 回退到可重写的 HTTP(S)。
+# 这些不是经确认的广告专用域名，可能影响美团系其他 App；异常时先注释这 6 条和下面的 AND 规则。
+DOMAIN,shark-mt.meituan.com,REJECT
+DOMAIN,shark-default.meituan.com,REJECT
+DOMAIN,shark-dp.meituan.com,REJECT
+DOMAIN,shark-ps.meituan.com,REJECT
+DOMAIN,shark-wm.sankuai.com,REJECT
+DOMAIN,shark.dianping.com,REJECT
+# 不使用全局 DOMAIN-KEYWORD,mquic-，只匹配 meituan.com 及其子域名中的该关键词。
+# 这是收窄范围的兼容写法，并非与 QX 的 mquic-*.meituan.com 完全等价。
+AND,((DOMAIN-SUFFIX,meituan.com),(DOMAIN-KEYWORD,mquic-)),REJECT
+# HTTPDNS 限制用于减少 App 绕过 Loon DNS；可能影响联网回退与速度。
+DOMAIN,httpdns.meituan.com,REJECT
+DOMAIN,httpdnsvip.meituan.com,REJECT
+DOMAIN,httpdnsmultiapi.meituan.com,REJECT
+DOMAIN,httpdnsmultiapivip.meituan.com,REJECT
+DOMAIN,dnspod.meituan.httpdns.qcloud.com,REJECT
+DOMAIN,dnspod.meituan.httpdns.start.qcloud.com,REJECT
+# 按用户提供的有效插件恢复 29 个 IPv4、4 个 IPv6 单地址规则。
+# 这些 IP 未被确认是广告专用，可能影响其他业务；异常时关闭本插件，不要扩大封锁。
+# 沿用有效附件的 DNS 匹配行为，不添加仅匹配已知 IP 目标的 no-resolve。
+IP-CIDR,202.90.108.13/32,REJECT
+IP-CIDR,202.90.110.46/32,REJECT
+IP-CIDR,202.90.108.69/32,REJECT
+IP-CIDR,202.90.110.45/32,REJECT
+IP-CIDR,202.90.108.68/32,REJECT
+IP-CIDR,202.90.110.48/32,REJECT
+IP-CIDR,202.90.108.67/32,REJECT
+IP-CIDR,202.90.110.36/32,REJECT
+IP-CIDR,202.90.108.54/32,REJECT
+IP-CIDR,202.90.108.55/32,REJECT
+IP-CIDR,203.76.217.51/32,REJECT
+IP-CIDR,203.76.217.53/32,REJECT
+IP-CIDR,203.76.217.241/32,REJECT
+IP-CIDR,203.76.217.243/32,REJECT
+IP-CIDR,103.202.146.30/32,REJECT
+IP-CIDR,103.202.146.49/32,REJECT
+IP-CIDR,101.50.8.64/32,REJECT
+IP-CIDR,103.63.160.64/32,REJECT
+IP-CIDR,103.63.160.69/32,REJECT
+IP-CIDR,103.37.155.77/32,REJECT
+IP-CIDR,103.37.155.60/32,REJECT
+IP-CIDR,111.230.0.200/32,REJECT
+IP-CIDR,139.9.47.231/32,REJECT
+IP-CIDR,121.37.4.167/32,REJECT
+IP-CIDR,119.29.126.219/32,REJECT
+IP-CIDR,106.55.217.56/32,REJECT
+IP-CIDR,103.37.152.224/32,REJECT
+IP-CIDR,119.29.48.215/32,REJECT
+IP-CIDR,42.193.128.160/32,REJECT
+IP-CIDR6,2405:1480:3000:303b::303b/128,REJECT
+IP-CIDR6,2405:1480:1000:3::1e/128,REJECT
+IP-CIDR6,2405:1480:1000:4::15/128,REJECT
+IP-CIDR6,2402:4e00:40:40::2:373/128,REJECT
+
+[Rewrite]
+# 恢复有效附件的 HTTPDNS 域名复写，兼顾 HTTP 与 HTTPS。
+request if ${url} ~= /^https?:\/\/(?:httpdns|httpdnsvip|httpdnsmultiapi|httpdnsmultiapivip)\.meituan\.com\//i then reject(403)
+request if ${url} ~= /^http:\/\/103\.37\.155\.60\/fetch(?:[\/?]|$)/ then reject(403)
+
+[Script]
+# 保留路径名称边界；除两个 scene 外，允许有效附件覆盖的后续子路径。
+# 固定版本参数用于区分上午的 JS 缓存；它不是账号令牌。
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/aggroup\/indexTab(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_tabs}, tag="美团-底栏Tab"
+response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/gwc_feed1_2265\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_feed}, tag="美团-购物车推荐流"
+response if ${url} ~= /^https?:\/\/feedguess\.meituan\.com\/lycoris\/scene\/personalcenter_2154\/?(?:\?|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_feed}, tag="美团-我的推荐流"
+response if ${url} ~= /^https?:\/\/mt-personalcenter\.meituan\.com\/usercenter\/display(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_mine_recommend}, tag="美团-我的页推荐"
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/defaultword(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索默认词"
+response if ${url} ~= /^https?:\/\/apimobile\.meituan\.com\/group\/v1\/deal\/searchpage\/hotword\/city\/divide\/hotrecommend(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_search}, tag="美团-搜索推广热词"
+response if ${url} ~= /^https?:\/\/assistify\.meituan\.com\/assistant\/getAppClientHornConfig(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_ai_skills}, tag="美团-AI技能"
+response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/mop\/entry\/shoppingCartEntry(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_cart_banner}, tag="美团-购物车Banner"
+response if ${url} ~= /^https?:\/\/mop\.meituan\.com\/api\/entryModule\/startupPicture(?:[\/?]|$)/i && ${response.status} == 200 then script("https://raw.githubusercontent.com/Cr1ssChen/loon-plugins/main/MT-Loon.js?v=20261030-r2") with requires_body=true, binary_body_mode=false, timeout=10, enable=${clean_splash}, tag="美团-开屏图"
+
+[MitM]
+# 沿用有效附件的 7 个精确域名：5 个响应域名与 2 个 HTTPDNS 域名。
+# 不使用 *.meituan.com；这些域名上的其他内容仍可能在本机被解密，勿分享凭证。
+hostname = apimobile.meituan.com,feedguess.meituan.com,mt-personalcenter.meituan.com,mop.meituan.com,assistify.meituan.com,httpdns.meituan.com,httpdnsmultiapi.meituan.com
